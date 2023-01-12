@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>언어감지서비스</title>
+    <!-- jQuery CDN 서비스 링크 연결-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+<body>
+    <div>
+        <fieldset>
+            <textarea cols="45" rows="10" id="userInput">
+                The persecution of homosexuals in Nazi Germany was a priority of the Nazi police state. Before 1933, homosexual acts were illegal in Germany but a thriving gay culture existed. Nazi persecution of homosexuals peaked prior to World War II. Between 1933 and 1945, an estimated 100,000 men were arrested. Those arrested were presumed guilty, and subjected to harsh interrogation and torture to elicit a confession.
+            </textarea>
+            <br>
+            <button id="detectBtn">언어감지</button>
+            <br>
+            <p>결과 : <span id="result" style="color:red;"></span></p>
+        </fieldset>
+    </div>
+    <script>
+        // js 주석, 언어감지 버튼을 클릭하면 입력한 텍스트를 서버로 전송
+        // 클라이언트 -> 서버 데이터를 전송하는 방식
+        // 1. form 전송 -> 화면이 껌벅 거린다 : 주소창 앞에 X자표기가 나타나면
+        // 2. ajax 전송 -> 파파고와 동일하게 구성, 사용
+
+        // 1. "언어감지" 버튼을 특정(css selector)하여, 클릭(click) 이벤트 발생(on) 처리
+        $('#detectBtn').on('click',clickListener)
+
+        function clickListener(){
+            // console.log('클릭') // print('클릭')과 동일
+            // 2. textarea에 입력된 데이터 획득
+            //    textarea를 특정, 입력 데이터 추출(val)
+            let src = $('#userInput').val()
+            // console.log(src)
+
+            // 3. ajax를 이용하여 서버측에 데이터 전달
+            //    대량의 텍스트이므로 전송방식은 post 방식으로 전달
+            //    클라이언트가 서버로 데이터를 보내는 방법을 method
+            //    ajax를 간단하게 함수로 제공해 준다(jQuery)
+            $.post({
+                url:'/predict',       // 서버측 URL 주소 지정 즉 run.py에서 /predict부분으로 던져줌
+                data:'text='+src,      // 키=값&키=값&...
+                dataType:'json',        // 응답데이터는 json형식으로 받겠다.
+                success:sucFunc,        // 통신이 성공하면 sucFunc호출해라
+                error:errFunc           // 통신이 실패하면 호출함수
+            })
+        }
+        function sucFunc( res ){
+            console.log('통신성공',res)
+            // 화면처리
+            $('#result').html(res.lang)
+        }
+        function errFunc( err ){
+            console.log('통신오류',err)
+        }
+    </script>
+</body>
+</html>
