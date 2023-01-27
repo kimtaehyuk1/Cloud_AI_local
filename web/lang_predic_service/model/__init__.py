@@ -15,7 +15,7 @@ def predict_lang_type(src):
     print(y_pred[0])
     # 4. 예측값을 한국어로 표기
     targets = joblib.load('./web/lang_predic_service/model/lang.label')
-    print(targets[y_pred[0]])  
+    print(targets[y_pred[0]])  # 딕셔너리 형태로 지정해 놨기에 targets[키값] 하면 그거 해당하는 내용(한글)이 나온다.
 
 
     return {'lang':targets[y_pred[0]]}
